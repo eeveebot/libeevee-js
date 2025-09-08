@@ -1,12 +1,12 @@
 "use strict";
 
-import { eeveeLogo, log } from "./lib/log.mjs";
-import { NatsClient } from "./lib/nats-client.mjs";
-import { handleSIG } from "./lib/signal-handlers.mjs";
+import { eeveeLogo as _eeveeLogo, log as _log } from "./lib/log.mjs";
+import { NatsClient as _NatsClient } from "./lib/nats-client.mjs";
+import { handleSIG as _handleSIG } from "./lib/signal-handlers.mjs";
 
-export const eeveeLogo = eeveeLogo;
-export const log = log;
+export const eeveeLogo = _eeveeLogo;
+export const log = _log;
 
-export const NatsClient = NatsClient;
+export const NatsClient = _NatsClient;
 
-export const handleSIG = handleSIG;
+export const handleSIG = _handleSIG;
