@@ -1,0 +1,23 @@
+{
+  "name": "@eeveebot/libeevee",
+  "version": "0.0.1",
+  "description": "eevee-bot nodejs libraries",
+  "homepage": "https://github.com/eeveebot/libeevee-js#readme",
+  "bugs": {
+    "url": "https://github.com/eeveebot/libeevee-js/issues"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/eeveebot/libeevee-js.git"
+  },
+  "license": "CC-BY-SA-4.0",
+  "author": "Edwin Pers <pers.edwin@gmail.com>",
+  "type": "module",
+  "main": "src/index.mjs",
+  "scripts": {
+    "test": "eslint src/"
+  },
+  "publishConfig": {
+    "registry": "https://npm.pkg.github.com/"
+  }
+}
