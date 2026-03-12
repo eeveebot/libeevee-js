@@ -1,4 +1,4 @@
-"use strict";
+'use strict';
 
 import { eeveeLogo as _eeveeLogo, log as _log } from "./lib/log.mjs";
 import { NatsClient as _NatsClient } from "./lib/nats-client.mjs";

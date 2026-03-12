@@ -1,33 +1,45 @@
-"use strict";
+'use strict';
 
 import { EventEmitter } from "events";
 import * as crypto from "crypto";
-
 import * as Nats from "nats";
-
 import { log } from "./log.mjs";
+
+interface NatsConfig {
+  natsHost: string;
+  natsToken: string;
+}
+
+interface MessageCallback {
+  (subject: string, message: Nats.Msg): void;
+}
 
 export class NatsClient extends EventEmitter {
   name = "";
   instanceUUID = "";
   instanceIdent = "";
 
-  subjects = [];
+  subjects: Nats.Subscription[] = [];
 
-  natsHost = null;
-  natsToken = null;
+  natsHost: string | null = null;
+  natsToken: string | null = null;
 
   sc = Nats.StringCodec();
+  nats: Nats.NatsConnection | null = null;
 
-  constructor(config) {
+  constructor(config: NatsConfig) {
     super();
     this.instanceUUID = crypto.randomUUID();
     this.natsHost = config.natsHost;
     this.natsToken = config.natsToken;
   }
 
-  async connect() {
+  async connect(): Promise<void> {
     try {
+      if (!this.natsHost || !this.natsToken) {
+        throw new Error("NATS host and token must be configured");
+      }
+      
       this.nats = await Nats.connect({
         servers: this.natsHost,
         token: this.natsToken,
@@ -35,9 +47,10 @@ export class NatsClient extends EventEmitter {
       log.info(`connected to NATS at ${this.nats.getServer()}`, {
         producer: "natsClient",
       });
-    } catch (err) {
-      log.error(err.message, { producer: "natsClient" });
-      if (err.message === "CONNECTION_REFUSED") {
+    } catch (err: unknown) {
+      const error = err as Error;
+      log.error(error.message, { producer: "natsClient" });
+      if (error.message === "CONNECTION_REFUSED") {
         log.error("E_CONNECTION_REFUSED from NATS, will retry", {
           producer: "natsClient",
         });
@@ -49,7 +62,7 @@ export class NatsClient extends EventEmitter {
     }
   }
 
-  async subscribe(subject, callback) {
+  async subscribe(subject: string, callback?: MessageCallback): Promise<string | boolean> {
     if (this.nats) {
       const sub = this.nats.subscribe(subject);
       this.subjects.push(sub);
@@ -74,7 +87,7 @@ export class NatsClient extends EventEmitter {
     }
   }
 
-  async publish(subject, message) {
+  async publish(subject: string, message: Uint8Array | string): Promise<boolean> {
     if (this.nats) {
       this.nats.publish(subject, message);
       return true;
@@ -86,7 +99,9 @@ export class NatsClient extends EventEmitter {
     }
   }
 
-  async drain() {
-    await this.nats.drain();
+  async drain(): Promise<void> {
+    if (this.nats) {
+      await this.nats.drain();
+    }
   }
 }

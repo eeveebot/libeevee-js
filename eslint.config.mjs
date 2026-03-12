@@ -1,6 +1,8 @@
 import { defineConfig } from "eslint/config";
 import js from "@eslint/js";
 import globals from "globals";
+import ts from "@typescript-eslint/eslint-plugin";
+import tsParser from "@typescript-eslint/parser";
 
 export default defineConfig([
   {
@@ -28,6 +30,26 @@ export default defineConfig([
     },
   },
   {
-    ignores: ["node_modules/"],
+    files: ["**/*.ts", "**/*.mts"],
+    languageOptions: {
+      parser: tsParser,
+      parserOptions: {
+        project: "./tsconfig.json",
+      },
+    },
+    plugins: {
+      "@typescript-eslint": ts,
+    },
+    rules: {
+      ...ts.configs.recommended.rules,
+      "semi": ["error", "always"],
+      "prefer-const": "error",
+      "no-unused-vars": "off",
+      "@typescript-eslint/no-unused-vars": "error",
+      "no-console": "error",
+    },
+  },
+  {
+    ignores: ["node_modules/", "dist/"],
   },
 ]);

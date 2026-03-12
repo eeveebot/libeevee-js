@@ -1,8 +1,8 @@
-"use strict";
+'use strict';
 
-import { log as log } from "./log.mjs";
+import { log } from "./log.mjs";
 
-export async function handleSIG(signal) {
+export async function handleSIG(signal: NodeJS.Signals): Promise<void> {
   log.info(`Received ${signal}, cleaning up... (repeat to force)`, {
     producer: "handleSIG",
   });
