@@ -15,7 +15,19 @@ import {
   httpRequestCounter as _httpRequestCounter,
   httpRequestDuration as _httpRequestDuration,
   register as _register,
-  initializeSystemMetrics as _initializeSystemMetrics
+  initializeSystemMetrics as _initializeSystemMetrics,
+  messageCounter as _messageCounter,
+  messageProcessingTime as _messageProcessingTime,
+  connectionCounter as _connectionCounter,
+  connectionGauge as _connectionGauge,
+  channelCounter as _channelCounter,
+  channelGauge as _channelGauge,
+  commandCounter as _commandCounter,
+  commandProcessingTime as _commandProcessingTime,
+  recordMessage as _recordMessage,
+  recordConnection as _recordConnection,
+  recordChannel as _recordChannel,
+  recordCommand as _recordCommand
 } from "./lib/metrics.mjs";
 import { setupHttpServer as _setupHttpServer } from "./lib/http-server.mjs";
 
@@ -39,6 +51,18 @@ export const httpRequestCounter = _httpRequestCounter;
 export const httpRequestDuration = _httpRequestDuration;
 export const register = _register;
 export const initializeSystemMetrics = _initializeSystemMetrics;
+export const messageCounter = _messageCounter;
+export const messageProcessingTime = _messageProcessingTime;
+export const connectionCounter = _connectionCounter;
+export const connectionGauge = _connectionGauge;
+export const channelCounter = _channelCounter;
+export const channelGauge = _channelGauge;
+export const commandCounter = _commandCounter;
+export const commandProcessingTime = _commandProcessingTime;
+export const recordMessage = _recordMessage;
+export const recordConnection = _recordConnection;
+export const recordChannel = _recordChannel;
+export const recordCommand = _recordCommand;
 
 // HTTP server exports
 export const setupHttpServer = _setupHttpServer;
