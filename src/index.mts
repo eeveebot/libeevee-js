@@ -4,6 +4,9 @@ import { eeveeLogo as _eeveeLogo, log as _log } from "./lib/log.mjs";
 import { NatsClient as _NatsClient } from "./lib/nats-client.mjs";
 import { handleSIG as _handleSIG } from "./lib/signal-handlers.mjs";
 import {
+  Counter as _Counter,
+  Gauge as _Gauge,
+  Histogram as _Histogram,
   uptimeGauge as _uptimeGauge,
   memoryUsageGauge as _memoryUsageGauge,
   natsPublishCounter as _natsPublishCounter,
@@ -23,6 +26,9 @@ export const NatsClient = _NatsClient;
 export const handleSIG = _handleSIG;
 
 // Metrics exports
+export const Counter = _Counter;
+export const Gauge = _Gauge;
+export const Histogram = _Histogram;
 export const uptimeGauge = _uptimeGauge;
 export const memoryUsageGauge = _memoryUsageGauge;
 export const natsPublishCounter = _natsPublishCounter;

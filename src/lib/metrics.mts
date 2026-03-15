@@ -2,6 +2,9 @@
 
 import { Counter, Gauge, Histogram, register } from 'prom-client';
 
+// Export prom-client classes for use in other modules
+export { Counter, Gauge, Histogram };
+
 // Core system metrics
 export const uptimeGauge = new Gauge({
   name: 'uptime_seconds',
