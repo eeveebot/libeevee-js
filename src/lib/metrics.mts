@@ -1,6 +1,7 @@
 'use strict';
 
 import { Counter, Gauge, Histogram, register } from 'prom-client';
+import { log } from './log.mjs';
 
 // Export prom-client classes for use in other modules
 export { Counter, Gauge, Histogram };
@@ -37,6 +38,118 @@ export const errorCounter = new Counter({
   help: 'Total number of errors encountered',
   labelNames: ['module', 'type', 'operation'],
 });
+
+// Generic message processing metrics
+export const messageCounter = new Counter({
+  name: 'messages_total',
+  help: 'Total number of messages processed',
+  labelNames: ['module', 'direction', 'result'],
+});
+
+export const messageProcessingTime = new Histogram({
+  name: 'message_processing_seconds',
+  help: 'Time spent processing messages',
+  labelNames: ['module'],
+  buckets: [0.001, 0.005, 0.01, 0.025, 0.05, 0.1, 0.25, 0.5, 1, 2.5, 5, 10],
+});
+
+// Generic connection metrics
+export const connectionCounter = new Counter({
+  name: 'connections_total',
+  help: 'Total number of connection attempts',
+  labelNames: ['module', 'result'],
+});
+
+export const connectionGauge = new Gauge({
+  name: 'active_connections',
+  help: 'Number of active connections',
+  labelNames: ['module'],
+});
+
+// Generic channel metrics
+export const channelCounter = new Counter({
+  name: 'channels_total',
+  help: 'Total number of channel join/part events',
+  labelNames: ['module', 'action'],
+});
+
+export const channelGauge = new Gauge({
+  name: 'active_channels',
+  help: 'Number of active channels',
+  labelNames: ['module', 'channel'],
+});
+
+// Generic command metrics
+export const commandCounter = new Counter({
+  name: 'commands_total',
+  help: 'Total number of commands processed',
+  labelNames: ['module', 'result'],
+});
+
+export const commandProcessingTime = new Histogram({
+  name: 'command_processing_seconds',
+  help: 'Time spent processing individual commands',
+  labelNames: ['module'],
+  buckets: [0.001, 0.005, 0.01, 0.025, 0.05, 0.1, 0.25, 0.5, 1, 2.5, 5],
+});
+
+// Helper functions for recording metrics safely
+export function recordMessage(platform: string, network: string, channel: string, direction: string, result: string): void {
+  try {
+    messageCounter.inc({
+      module: platform,
+      direction,
+      result,
+    });
+  } catch (error) {
+    log.error('Failed to record message metric', {
+      producer: 'libeevee-metrics',
+      error,
+    });
+  }
+}
+
+export function recordConnection(platform: string, network: string, result: string): void {
+  try {
+    connectionCounter.inc({
+      module: platform,
+      result,
+    });
+  } catch (error) {
+    log.error('Failed to record connection metric', {
+      producer: 'libeevee-metrics',
+      error,
+    });
+  }
+}
+
+export function recordChannel(platform: string, network: string, channel: string, action: string): void {
+  try {
+    channelCounter.inc({
+      module: platform,
+      action,
+    });
+  } catch (error) {
+    log.error('Failed to record channel metric', {
+      producer: 'libeevee-metrics',
+      error,
+    });
+  }
+}
+
+export function recordCommand(platform: string, network: string, channel: string, result: string): void {
+  try {
+    commandCounter.inc({
+      module: platform,
+      result,
+    });
+  } catch (error) {
+    log.error('Failed to record command metric', {
+      producer: 'libeevee-metrics',
+      error,
+    });
+  }
+}
 
 // Initialize system metrics
 export function initializeSystemMetrics(moduleName: string): void {
