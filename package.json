@@ -1,6 +1,6 @@
 {
   "name": "@eeveebot/libeevee",
-  "version": "3.3.2",
+  "version": "3.4.0",
   "description": "eevee-bot nodejs libraries",
   "homepage": "https://github.com/eeveebot/libeevee-js#readme",
   "bugs": {
@@ -24,6 +24,7 @@
   },
   "dependencies": {
     "nats": "^2.29.3",
+    "prom-client": "^15.1.3",
     "winston": "^3.19.0"
   },
   "devDependencies": {
