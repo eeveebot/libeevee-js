@@ -1,6 +1,6 @@
 {
   "name": "@eeveebot/libeevee",
-  "version": "3.6.2",
+  "version": "3.6.3",
   "description": "eevee-bot nodejs libraries",
   "homepage": "https://github.com/eeveebot/libeevee-js#readme",
   "bugs": {

@@ -24,10 +24,12 @@ import {
   channelGauge as _channelGauge,
   commandCounter as _commandCounter,
   commandProcessingTime as _commandProcessingTime,
+  commandErrorCounter as _commandErrorCounter,
   recordMessage as _recordMessage,
   recordConnection as _recordConnection,
   recordChannel as _recordChannel,
-  recordCommand as _recordCommand
+  recordCommand as _recordCommand,
+  recordCommandError as _recordCommandError
 } from "./lib/metrics.mjs";
 import { setupHttpServer as _setupHttpServer } from "./lib/http-server.mjs";
 
@@ -59,10 +61,12 @@ export const channelCounter = _channelCounter;
 export const channelGauge = _channelGauge;
 export const commandCounter = _commandCounter;
 export const commandProcessingTime = _commandProcessingTime;
+export const commandErrorCounter = _commandErrorCounter;
 export const recordMessage = _recordMessage;
 export const recordConnection = _recordConnection;
 export const recordChannel = _recordChannel;
 export const recordCommand = _recordCommand;
+export const recordCommandError = _recordCommandError;
 
 // HTTP server exports
 export const setupHttpServer = _setupHttpServer;

@@ -83,7 +83,7 @@ export const channelGauge = new Gauge({
 export const commandCounter = new Counter({
   name: 'commands_total',
   help: 'Total number of commands processed',
-  labelNames: ['module', 'result'],
+  labelNames: ['module', 'platform', 'network', 'channel', 'result'],
 });
 
 export const commandProcessingTime = new Histogram({
@@ -91,6 +91,13 @@ export const commandProcessingTime = new Histogram({
   help: 'Time spent processing individual commands',
   labelNames: ['module'],
   buckets: [0.001, 0.005, 0.01, 0.025, 0.05, 0.1, 0.25, 0.5, 1, 2.5, 5],
+});
+
+// Generic command error metrics
+export const commandErrorCounter = new Counter({
+  name: 'command_errors_total',
+  help: 'Total number of command errors encountered',
+  labelNames: ['module', 'type'],
 });
 
 // Helper functions for recording metrics safely
@@ -141,10 +148,27 @@ export function recordCommand(platform: string, network: string, channel: string
   try {
     commandCounter.inc({
       module: platform,
-      result,
+      platform: platform,
+      network: network,
+      channel: channel,
+      result: result,
     });
   } catch (error) {
     log.error('Failed to record command metric', {
+      producer: 'libeevee-metrics',
+      error,
+    });
+  }
+}
+
+export function recordCommandError(platform: string, errorType: string): void {
+  try {
+    commandErrorCounter.inc({
+      module: platform,
+      type: errorType,
+    });
+  } catch (error) {
+    log.error('Failed to record command error metric', {
       producer: 'libeevee-metrics',
       error,
     });
