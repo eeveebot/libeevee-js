@@ -17,6 +17,7 @@ import {
   register as _register,
   initializeSystemMetrics as _initializeSystemMetrics
 } from "./lib/metrics.mjs";
+import { setupHttpServer as _setupHttpServer } from "./lib/http-server.mjs";
 
 export const eeveeLogo = _eeveeLogo;
 export const log = _log;
@@ -38,3 +39,6 @@ export const httpRequestCounter = _httpRequestCounter;
 export const httpRequestDuration = _httpRequestDuration;
 export const register = _register;
 export const initializeSystemMetrics = _initializeSystemMetrics;
+
+// HTTP server exports
+export const setupHttpServer = _setupHttpServer;
