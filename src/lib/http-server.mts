@@ -1,6 +1,10 @@
 import express, { Application, Request, Response } from 'express';
 import { log } from './log.mjs';
-import { httpRequestCounter, httpRequestDuration, register } from './metrics.mjs';
+import {
+  httpRequestCounter,
+  httpRequestDuration,
+  register,
+} from './metrics.mjs';
 
 interface HttpServerOptions {
   port?: string;

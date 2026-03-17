@@ -1,8 +1,11 @@
 'use strict';
 
-import { eeveeLogo as _eeveeLogo, log as _log } from "./lib/log.mjs";
-import { NatsClient as _NatsClient } from "./lib/nats-client.mjs";
-import { handleSIG as _handleSIG } from "./lib/signal-handlers.mjs";
+// Type definitions
+/// <reference path="./types/irc-colors.d.ts" />
+
+import { eeveeLogo as _eeveeLogo, log as _log } from './lib/log.mjs';
+import { NatsClient as _NatsClient } from './lib/nats-client.mjs';
+import { handleSIG as _handleSIG } from './lib/signal-handlers.mjs';
 import {
   Counter as _Counter,
   Gauge as _Gauge,
@@ -29,9 +32,12 @@ import {
   recordConnection as _recordConnection,
   recordChannel as _recordChannel,
   recordCommand as _recordCommand,
-  recordCommandError as _recordCommandError
-} from "./lib/metrics.mjs";
-import { setupHttpServer as _setupHttpServer } from "./lib/http-server.mjs";
+  recordCommandError as _recordCommandError,
+} from './lib/metrics.mjs';
+import { setupHttpServer as _setupHttpServer } from './lib/http-server.mjs';
+
+// Export irc-colors as a passthrough
+export { default as ircColors } from 'irc-colors';
 
 export const eeveeLogo = _eeveeLogo;
 export const log = _log;

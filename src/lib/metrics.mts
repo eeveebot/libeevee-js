@@ -101,7 +101,13 @@ export const commandErrorCounter = new Counter({
 });
 
 // Helper functions for recording metrics safely
-export function recordMessage(platform: string, network: string, channel: string, direction: string, result: string): void {
+export function recordMessage(
+  platform: string,
+  network: string,
+  channel: string,
+  direction: string,
+  result: string
+): void {
   try {
     messageCounter.inc({
       module: platform,
@@ -116,7 +122,11 @@ export function recordMessage(platform: string, network: string, channel: string
   }
 }
 
-export function recordConnection(platform: string, network: string, result: string): void {
+export function recordConnection(
+  platform: string,
+  network: string,
+  result: string
+): void {
   try {
     connectionCounter.inc({
       module: platform,
@@ -130,7 +140,12 @@ export function recordConnection(platform: string, network: string, result: stri
   }
 }
 
-export function recordChannel(platform: string, network: string, channel: string, action: string): void {
+export function recordChannel(
+  platform: string,
+  network: string,
+  channel: string,
+  action: string
+): void {
   try {
     channelCounter.inc({
       module: platform,
@@ -144,7 +159,12 @@ export function recordChannel(platform: string, network: string, channel: string
   }
 }
 
-export function recordCommand(platform: string, network: string, channel: string, result: string): void {
+export function recordCommand(
+  platform: string,
+  network: string,
+  channel: string,
+  result: string
+): void {
   try {
     commandCounter.inc({
       module: platform,
@@ -185,10 +205,19 @@ export function initializeSystemMetrics(moduleName: string): void {
   // Update memory usage periodically
   setInterval(() => {
     const memoryUsage = process.memoryUsage();
-    memoryUsageGauge.set({ module: moduleName, type: 'heap_used' }, memoryUsage.heapUsed);
-    memoryUsageGauge.set({ module: moduleName, type: 'heap_total' }, memoryUsage.heapTotal);
+    memoryUsageGauge.set(
+      { module: moduleName, type: 'heap_used' },
+      memoryUsage.heapUsed
+    );
+    memoryUsageGauge.set(
+      { module: moduleName, type: 'heap_total' },
+      memoryUsage.heapTotal
+    );
     memoryUsageGauge.set({ module: moduleName, type: 'rss' }, memoryUsage.rss);
-    memoryUsageGauge.set({ module: moduleName, type: 'external' }, memoryUsage.external);
+    memoryUsageGauge.set(
+      { module: moduleName, type: 'external' },
+      memoryUsage.external
+    );
   }, 10000); // Update every 10 seconds
 }
 
