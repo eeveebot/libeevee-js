@@ -1,6 +1,9 @@
 'use strict';
 
+import { randomUUID } from 'node:crypto';
 import { log } from './log.mjs';
+import { NatsClient } from './nats-client.mjs';
+import { ModuleMetrics } from './create-module-metrics.mjs';
 
 /**
  * A user object returned by queryChannelUsers.
@@ -10,6 +13,11 @@ export interface ChannelUser {
   ident: string;
   hostname: string;
   modes: string[];
+}
+
+/** Minimal message interface for NATS callbacks */
+interface NatsMessage {
+  string(): string;
 }
 
 // In-flight request tracker (module-level so closures can access it)
@@ -34,22 +42,19 @@ const pendingRequests = new Map<
  * @param options.producer  - Name for log messages (default "queryChannelUsers")
  */
 export function queryChannelUsers(
-  nats: any, // NatsClient
+  nats: InstanceType<typeof NatsClient>,
   platform: string,
   instance: string,
   channel: string,
   options?: {
     timeoutMs?: number;
-    metrics?: { recordNatsPublish: (type: string) => void; recordNatsSubscribe: (subject: string) => void };
+    metrics?: ModuleMetrics;
     producer?: string;
   }
 ): Promise<ChannelUser[]> {
   const timeoutMs = options?.timeoutMs ?? 5000;
   const metrics = options?.metrics;
   const producer = options?.producer ?? 'queryChannelUsers';
-
-  // We need randomUUID — require inline to avoid top-level import issues
-  const { randomUUID } = require('crypto') as { randomUUID: () => string };
 
   return new Promise<ChannelUser[]>((resolve, reject) => {
     const replyChannel = `${producer}.userlist.reply.${randomUUID()}`;
@@ -62,7 +67,7 @@ export function queryChannelUsers(
     pendingRequests.set(replyChannel, { resolve, reject, timeout });
 
     void nats
-      .subscribe(replyChannel, (subject: string, message: any) => {
+      .subscribe(replyChannel, (subject: string, message: NatsMessage) => {
         metrics?.recordNatsSubscribe(subject);
         try {
           const request = pendingRequests.get(replyChannel);

@@ -1,7 +1,6 @@
 'use strict';
 
 import { NatsClient } from './nats-client.mjs';
-import { log } from './log.mjs';
 
 /**
  * Create and connect a NATS client using environment variables.

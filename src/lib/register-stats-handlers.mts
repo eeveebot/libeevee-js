@@ -1,22 +1,32 @@
 'use strict';
 
 import { log } from './log.mjs';
+import { NatsClient } from './nats-client.mjs';
 import { register as promRegister } from './metrics.mjs';
+import { ModuleMetrics } from './create-module-metrics.mjs';
+
+/** NatsClient subscription return type */
+type NatsSubscription = Promise<string | boolean>;
 
 /**
  * Options for registerStatsHandlers.
  */
 export interface StatsHandlersOptions {
   /** The NATS client instance */
-  nats: any; // NatsClient — using any to avoid circular import
+  nats: InstanceType<typeof NatsClient>;
   /** Module name (used in logging and response payloads) */
   moduleName: string;
   /** Module start time (Date.now() captured at startup) */
   startTime: number;
   /** Optional: Prometheus register instance (defaults to libeevee's shared register) */
-  prometheusRegister?: any;
+  prometheusRegister?: typeof promRegister;
   /** Optional: module metrics instance for recording NATS pub/sub */
-  metrics?: { recordNatsPublish: (type: string) => void; recordNatsSubscribe: (subject: string) => void };
+  metrics?: ModuleMetrics;
+}
+
+/** Minimal message interface for NATS callbacks */
+interface NatsMessage {
+  string(): string;
 }
 
 /**
@@ -38,13 +48,13 @@ function formatUptime(ms: number): string {
  * Returns an array of subscription objects (for the caller to track or push
  * onto natsSubscriptions).
  */
-export function registerStatsHandlers(options: StatsHandlersOptions): any[] {
+export function registerStatsHandlers(options: StatsHandlersOptions): NatsSubscription[] {
   const { nats, moduleName, startTime, metrics } = options;
   const promReg = options.prometheusRegister ?? promRegister;
-  const subscriptions: any[] = [];
+  const subscriptions: NatsSubscription[] = [];
 
   // --- stats.uptime ---
-  const uptimeSub = nats.subscribe('stats.uptime', (subject: string, message: any) => {
+  const uptimeSub = nats.subscribe('stats.uptime', (subject: string, message: NatsMessage) => {
     metrics?.recordNatsSubscribe(subject);
     try {
       const data = JSON.parse(message.string());
@@ -74,7 +84,7 @@ export function registerStatsHandlers(options: StatsHandlersOptions): any[] {
   subscriptions.push(uptimeSub);
 
   // --- stats.emit.request ---
-  const statsSub = nats.subscribe('stats.emit.request', (subject: string, message: any) => {
+  const statsSub = nats.subscribe('stats.emit.request', (subject: string, message: NatsMessage) => {
     metrics?.recordNatsSubscribe(subject);
     try {
       const data = JSON.parse(message.string());
