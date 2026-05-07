@@ -46,6 +46,7 @@ export { sendChatMessage, sendAction, ChatMessage } from './lib/send-chat-messag
 export { registerHelp, HelpEntry } from './lib/register-help.mjs';
 export { registerStatsHandlers, StatsHandlersOptions } from './lib/register-stats-handlers.mjs';
 export { queryChannelUsers, ChannelUser } from './lib/query-channel-users.mjs';
+export { queryUserModes, UserModes } from './lib/query-user-modes.mjs';
 export {
   colorizeForPlatform,
   colorizeBgForPlatform,
