@@ -35,6 +35,39 @@ import {
   recordCommandError as _recordCommandError,
 } from './lib/metrics.mjs';
 import { setupHttpServer as _setupHttpServer } from './lib/http-server.mjs';
+import { createNatsConnection as _createNatsConnection } from './lib/create-nats-connection.mjs';
+import { registerGracefulShutdown as _registerGracefulShutdown } from './lib/register-graceful-shutdown.mjs';
+import { createModuleMetrics as _createModuleMetrics } from './lib/create-module-metrics.mjs';
+import { loadModuleConfig as _loadModuleConfig } from './lib/load-module-config.mjs';
+export { RateLimitConfig, defaultRateLimit } from './lib/types.mjs';
+export type { ModuleMetrics } from './lib/create-module-metrics.mjs';
+export { registerCommand, CommandRegistrationOptions } from './lib/register-command.mjs';
+export { sendChatMessage, sendAction, ChatMessage } from './lib/send-chat-message.mjs';
+export { registerHelp, HelpEntry } from './lib/register-help.mjs';
+export { registerStatsHandlers, StatsHandlersOptions } from './lib/register-stats-handlers.mjs';
+export { queryChannelUsers, ChannelUser } from './lib/query-channel-users.mjs';
+export {
+  colorizeForPlatform,
+  colorizeBgForPlatform,
+  styleForPlatform,
+  colorizeByType,
+  randomColorForPlatform,
+  colorizeByValue,
+  rainbowForPlatform,
+  stripColors,
+  stripStyle,
+  stripColorsAndStyle,
+  fgColors,
+  bgColors,
+  styles,
+} from './lib/colorize.mjs';
+export type {
+  IrcColorName,
+  IrcBgColorName,
+  IrcStyleName,
+  SemanticColorMap,
+  ValueColorRange,
+} from './lib/colorize.mjs';
 
 // Export irc-colors as a passthrough
 export { default as ircColors } from 'irc-colors';
@@ -76,3 +109,9 @@ export const recordCommandError = _recordCommandError;
 
 // HTTP server exports
 export const setupHttpServer = _setupHttpServer;
+
+// New helpers (Phase 1)
+export const createNatsConnection = _createNatsConnection;
+export const registerGracefulShutdown = _registerGracefulShutdown;
+export const createModuleMetrics = _createModuleMetrics;
+export const loadModuleConfig = _loadModuleConfig;
