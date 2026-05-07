@@ -1,6 +1,6 @@
 # @eeveebot/libeevee
 
-Common patterns and shared utilities for eevee bot modules.
+> Common patterns and shared utilities for eevee modules.
 
 ## Install
 
@@ -498,6 +498,10 @@ These are re-exported from their original libraries for convenience:
 
 ---
 
+## Contributing
+
+Contributions are welcome! Please see the [eevee contributing guide](https://github.com/eeveebot/eevee) for details.
+
 ## License
 
-CC-BY-SA-4.0
+[CC BY-NC-SA 4.0](https://creativecommons.org/licenses/by-nc-sa/4.0/) — see [LICENSE](./LICENSE) for the full text.
