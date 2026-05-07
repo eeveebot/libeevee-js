@@ -89,6 +89,7 @@ export function queryUserModes(
             channel: response.channel,
             nick: response.nick,
             modes: response.modes || [],
+            isChannelAdmin: response.isChannelAdmin ?? false,
           });
         } catch (error) {
           log.error('Failed to process user modes response', {
