@@ -13,6 +13,7 @@ export interface ChannelUser {
   ident: string;
   hostname: string;
   modes: string[];
+  isChannelAdmin: boolean;
 }
 
 /** Minimal message interface for NATS callbacks */

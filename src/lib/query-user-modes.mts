@@ -12,6 +12,7 @@ export interface UserModes {
   channel: string;
   nick: string;
   modes: string[];
+  isChannelAdmin: boolean;
 }
 
 /** Minimal message interface for NATS callbacks */
