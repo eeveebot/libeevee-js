@@ -290,7 +290,20 @@ const users = await queryChannelUsers(nats, 'irc', 'libera', '#eevee', {
   producer: 'seen',       // for log messages
   timeoutMs: 5000,        // default: 5000
 });
-// users: Array<{ nick, ident, hostname, modes }>
+// users: Array<ChannelUser> — each user includes isChannelAdmin boolean
+```
+
+#### `queryUserModes(nats, platform, instance, channel, nick, options?)`
+
+Queries the IRC connector for a specific user's channel modes via NATS RPC. Sends a `get-modes-for-user` control command and waits for a reply on a unique channel (5s timeout). The server is polled fresh every time (no caching).
+
+```ts
+const result = await queryUserModes(nats, 'irc', 'libera', '#eevee', 'alice', {
+  metrics,
+  producer: 'seen',       // for log messages
+  timeoutMs: 5000,        // default: 5000
+});
+// result: UserModes — { channel, nick, modes, isChannelAdmin }
 ```
 
 ---
@@ -443,8 +456,24 @@ interface ChannelUser {
   ident: string;
   hostname: string;
   modes: string[];
+  isChannelAdmin: boolean;
 }
 ```
+
+`isChannelAdmin` is `true` if the user has channel mode `+h` (halfop), `+o` (op), `+a` (admin/protect), or `+q` (owner).
+
+#### `UserModes`
+
+```ts
+interface UserModes {
+  channel: string;
+  nick: string;
+  modes: string[];
+  isChannelAdmin: boolean;
+}
+```
+
+`isChannelAdmin` is `true` if the user has channel mode `+h` (halfop), `+o` (op), `+a` (admin/protect), or `+q` (owner).
 
 #### `SemanticColorMap`
 
