@@ -15,7 +15,7 @@ import { log } from './log.mjs';
  *   interface EchoConfig { ratelimit?: RateLimitConfig }
  *   const config = loadModuleConfig<EchoConfig>({});
  */
-export function loadModuleConfig<T extends Record<string, unknown>>(
+export function loadModuleConfig<T>(
   defaults: T
 ): T {
   const configPath = process.env.MODULE_CONFIG_PATH;
