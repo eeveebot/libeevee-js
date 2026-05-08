@@ -42,6 +42,7 @@ import { loadModuleConfig as _loadModuleConfig } from './lib/load-module-config.
 export { RateLimitConfig, defaultRateLimit } from './lib/types.mjs';
 export type { ModuleMetrics } from './lib/create-module-metrics.mjs';
 export { registerCommand, CommandRegistrationOptions } from './lib/register-command.mjs';
+export { registerBroadcast, BroadcastRegistrationOptions } from './lib/register-broadcast.mjs';
 export { sendChatMessage, sendAction, ChatMessage } from './lib/send-chat-message.mjs';
 export { registerHelp, HelpEntry } from './lib/register-help.mjs';
 export { registerStatsHandlers, StatsHandlersOptions } from './lib/register-stats-handlers.mjs';
