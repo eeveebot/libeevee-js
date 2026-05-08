@@ -505,12 +505,80 @@ interface ValueColorRange {
 
 ---
 
+### Logging
+
+#### `log`
+
+A pre-configured [winston](https://github.com/winstonjs/winston) logger instance. All eevee modules use this for structured logging — never `console.log`.
+
+**Format depends on `NODE_ENV`:**
+
+| Environment | Format | Example Output |
+|---|---|---|
+| Non-production | Colored, human-readable | `14:32:01 [info] [seen] Module started` |
+| Production (`NODE_ENV=production`) | JSON with ISO timestamps | `{"timestamp":"2026-05-07T14:32:01Z","level":"info","producer":"seen","message":"Module started"}` |
+
+Both formats include `errors({ stack: true })` (Error objects render their stack trace) and `splat()` (printf-style interpolation).
+
+**Log levels:**
+
+```ts
+import { log } from '@eeveebot/libeevee';
+
+log.debug('Detailed tracing info', { producer: 'seen' });
+log.info('Module started', { producer: 'seen' });
+log.warn('Rate limit exceeded', { producer: 'seen', channel: '#eevee' });
+log.error('Failed to connect', { producer: 'seen', error: err.message });
+```
+
+**The `producer` convention:**
+
+Every log call should include a `producer` field in the metadata object identifying the subsystem that generated the message. This is not enforced by winston — it's an eevee convention — but it makes filtering logs across a running deployment far more useful.
+
+```ts
+log.info('Incoming message published', { producer: 'ircClient', channel: '#eevee', user: 'goos' });
+// Non-production: 14:32:01 [info] [ircClient] Incoming message published
+// Production: {"timestamp":"...","level":"info","producer":"ircClient","message":"Incoming message published","channel":"#eevee","user":"goos"}
+```
+
+**Structured metadata:**
+
+Pass any key-value pairs as the second argument. They become fields in the log output (JSON in production, embedded in the formatted string in dev):
+
+```ts
+log.info('Command executed', {
+  producer: 'dice',
+  platform: 'irc',
+  channel: '#eevee',
+  user: 'goos',
+  result: '4d6k3 → 3, 5, 2, 6 (keep 3) → 14',
+});
+```
+
+**Error logging pattern:**
+
+Use `log.error()` with the error message (not the Error object) in the `error` field:
+
+```ts
+try {
+  await someOperation();
+} catch (error) {
+  log.error('Operation failed', {
+    producer: 'seen',
+    error: error instanceof Error ? error.message : String(error),
+  });
+}
+```
+
+This keeps the output structured and searchable. The `errors({ stack: true })` transform handles stack traces when you do pass an Error object directly.
+
+---
+
 ### Passthrough Exports
 
 These are re-exported from their original libraries for convenience:
 
 - `ircColors` — full `irc-colors` API (foreground/background colors, styles, rainbow, strip)
-- `log` — Winston logger instance
 - `NatsClient` — NATS client class
 - `handleSIG` — Double-SIGINT force-exit handler
 
