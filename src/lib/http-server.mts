@@ -5,10 +5,17 @@ import {
   httpRequestDuration,
   register,
 } from './metrics.mjs';
+import type { NatsClient } from './nats-client.mjs';
 
 interface HttpServerOptions {
   port?: string;
   serviceName: string;
+  /**
+   * Optional NATS client(s) to check connectivity in the /health endpoint.
+   * If provided, the health endpoint returns 503 when any client is disconnected.
+   * If omitted, the health endpoint always returns 200 (backward compatible).
+   */
+  natsClients?: NatsClient | NatsClient[];
 }
 
 /**
@@ -52,6 +59,25 @@ export function setupHttpServer(options: HttpServerOptions): void {
 
   // Health check endpoint
   app.get('/health', (req: Request, res: Response) => {
+    // If NATS clients were provided, check connectivity
+    if (options.natsClients) {
+      const clients = Array.isArray(options.natsClients)
+        ? options.natsClients
+        : [options.natsClients];
+
+      const disconnected = clients.find((client) => client.isClosed());
+
+      if (disconnected) {
+        res.status(503).json({
+          status: 'unhealthy',
+          reason: 'NATS disconnected',
+          timestamp: new Date().toISOString(),
+          service: options.serviceName,
+        });
+        return;
+      }
+    }
+
     res.status(200).json({
       status: 'ok',
       timestamp: new Date().toISOString(),

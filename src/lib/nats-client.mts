@@ -110,4 +110,11 @@ export class NatsClient extends EventEmitter {
       await this.nats.drain();
     }
   }
+
+  /**
+   * Returns true if the NATS connection is closed or was never established.
+   */
+  isClosed(): boolean {
+    return !this.nats || this.nats.isClosed();
+  }
 }
