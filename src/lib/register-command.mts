@@ -10,6 +10,7 @@ export interface CommandRegistrationOptions {
   commandDisplayName: string;
   regex: string;
   platformPrefixAllowed?: boolean;
+  nickPrefixAllowed?: boolean;
   ratelimit?: RateLimitConfig;
   /** Defaults to '.*' for all platform/network/instance/channel/user matchers */
   platform?: string;
@@ -53,6 +54,7 @@ export async function registerCommand(
     user: options.user ?? '.*',
     regex: options.regex,
     platformPrefixAllowed: options.platformPrefixAllowed ?? true,
+    nickPrefixAllowed: options.nickPrefixAllowed ?? false,
     ratelimit: options.ratelimit,
   };
 
