@@ -133,6 +133,27 @@ Sets up an Express server for Prometheus metrics scraping and health checks.
 setupHttpServer({ port: '9000', serviceName: 'mymod' });
 ```
 
+**Options:**
+
+| Field | Type | Default | Description |
+|-------|------|---------|-------------|
+| `port` | `string` | `'9000'` | Port for the HTTP server |
+| `serviceName` | `string` | — | Service name included in health responses |
+| `natsClients` | `NatsClient[]` | `[]` | NATS clients to check for connectivity |
+
+**Health endpoint behavior:**
+
+- `GET /health` checks connectivity of all provided `natsClients`
+- Returns **200** if all clients are connected (`isClosed()` returns `false`)
+- Returns **503** if any client is disconnected (`isClosed()` returns `true`)
+- If `natsClients` is not provided or empty, always returns **200** (backward compatible)
+
+```ts
+// With NATS health checking:
+const nats = await createNatsConnection();
+setupHttpServer({ port: '9000', serviceName: 'mymod', natsClients: [nats] });
+```
+
 #### `initializeSystemMetrics(moduleName)`
 
 Initializes the standard system metrics (uptime gauge, memory usage gauge) for the given module. Call once at startup.
@@ -580,6 +601,7 @@ These are re-exported from their original libraries for convenience:
 
 - `ircColors` — full `irc-colors` API (foreground/background colors, styles, rainbow, strip)
 - `NatsClient` — NATS client class
+- `NatsClient.isClosed()` — Returns `true` if the NATS connection is closed/disconnected. Used by the health endpoint to report connectivity status.
 - `handleSIG` — Double-SIGINT force-exit handler
 
 ---
