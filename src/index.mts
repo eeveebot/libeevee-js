@@ -39,7 +39,7 @@ import { createNatsConnection as _createNatsConnection } from './lib/create-nats
 import { registerGracefulShutdown as _registerGracefulShutdown } from './lib/register-graceful-shutdown.mjs';
 import { createModuleMetrics as _createModuleMetrics } from './lib/create-module-metrics.mjs';
 import { loadModuleConfig as _loadModuleConfig } from './lib/load-module-config.mjs';
-export { RateLimitConfig, defaultRateLimit } from './lib/types.mjs';
+export { NatsSubscriptionResult, RateLimitConfig, defaultRateLimit } from './lib/types.mjs';
 export type { ModuleMetrics } from './lib/create-module-metrics.mjs';
 export { registerCommand, CommandRegistrationOptions } from './lib/register-command.mjs';
 export { registerBroadcast, BroadcastRegistrationOptions } from './lib/register-broadcast.mjs';

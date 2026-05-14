@@ -1,5 +1,13 @@
 'use strict';
 
+import type * as Nats from 'nats';
+
+/**
+ * Result of a NATS subscribe() call.
+ * Returns the Subscription on success, or false if the client is not initialized.
+ */
+export type NatsSubscriptionResult = Nats.Subscription | false;
+
 /**
  * Rate limit configuration for command registration.
  * Shared across all modules that register commands.
