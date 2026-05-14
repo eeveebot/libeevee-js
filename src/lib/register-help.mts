@@ -1,5 +1,6 @@
 'use strict';
 
+import * as Nats from 'nats';
 import { NatsClient } from './nats-client.mjs';
 import { log } from './log.mjs';
 import { ModuleMetrics } from './create-module-metrics.mjs';
@@ -33,8 +34,8 @@ export async function registerHelp(
   moduleName: string,
   helpData: HelpEntry[],
   metrics?: ModuleMetrics
-): Promise<Array<Promise<string | boolean>>> {
-  const subscriptions: Array<Promise<string | boolean>> = [];
+): Promise<Array<Promise<Nats.Subscription | false>>> {
+  const subscriptions: Array<Promise<Nats.Subscription | false>> = [];
 
   async function publishHelp(): Promise<void> {
     const helpUpdate = {

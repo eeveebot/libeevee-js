@@ -28,14 +28,23 @@ export function loadModuleConfig<T>(
 
   try {
     const configFile = fs.readFileSync(configPath, 'utf8');
-    const config = yaml.load(configFile) as T;
+    const config = yaml.load(configFile, { schema: yaml.DEFAULT_SCHEMA });
+
+    if (config === null || config === undefined || typeof config !== 'object' || Array.isArray(config)) {
+      log.error('Module configuration is not a valid object, using defaults', {
+        producer: 'loadModuleConfig',
+        configPath,
+        configType: typeof config,
+      });
+      return defaults;
+    }
 
     log.info('Loaded module configuration', {
       producer: 'loadModuleConfig',
       configPath,
     });
 
-    return config;
+    return config as T;
   } catch (error) {
     log.error('Failed to load module configuration, using defaults', {
       producer: 'loadModuleConfig',

@@ -21,9 +21,12 @@ interface HttpServerOptions {
 /**
  * Setup HTTP API server with common endpoints
  */
-export function setupHttpServer(options: HttpServerOptions): void {
+export function setupHttpServer(options: HttpServerOptions) {
   const app: Application = express();
   const port = options.port || '9000';
+
+  // Middleware
+  app.use(express.json());
 
   // Request tracking middleware
   app.use((req: Request, res: Response, next: () => void) => {
@@ -53,9 +56,6 @@ export function setupHttpServer(options: HttpServerOptions): void {
 
     next();
   });
-
-  // Middleware
-  app.use(express.json());
 
   // Health check endpoint
   app.get('/health', (req: Request, res: Response) => {
@@ -95,7 +95,7 @@ export function setupHttpServer(options: HttpServerOptions): void {
         producer: `${options.serviceName}-http`,
         error: ex,
       });
-      res.status(500).end(ex);
+      res.status(500).end('Error generating metrics');
     }
   });
 
@@ -113,4 +113,6 @@ export function setupHttpServer(options: HttpServerOptions): void {
       error: err,
     });
   });
+
+  return server;
 }

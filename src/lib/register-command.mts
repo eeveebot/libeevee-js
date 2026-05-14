@@ -1,5 +1,6 @@
 'use strict';
 
+import * as Nats from 'nats';
 import { NatsClient } from './nats-client.mjs';
 import { log } from './log.mjs';
 import { RateLimitConfig } from './types.mjs';
@@ -39,9 +40,9 @@ export async function registerCommand(
   options: CommandRegistrationOptions,
   metrics?: ModuleMetrics,
   autoControlSub: boolean = true
-): Promise<Array<Promise<string | boolean>>> {
+): Promise<Array<Promise<Nats.Subscription | false>>> {
   const m = metrics ?? createModuleMetrics(options.commandDisplayName);
-  const subscriptions: Array<Promise<string | boolean>> = [];
+  const subscriptions: Array<Promise<Nats.Subscription | false>> = [];
 
   const registration = {
     type: 'command.register',

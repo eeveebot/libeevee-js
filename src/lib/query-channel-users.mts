@@ -53,7 +53,7 @@ export function queryChannelUsers(
     producer?: string;
   }
 ): Promise<ChannelUser[]> {
-  const timeoutMs = options?.timeoutMs ?? 5000;
+  const timeoutMs = options?.timeoutMs ?? 10000;
   const metrics = options?.metrics;
   const producer = options?.producer ?? 'queryChannelUsers';
 

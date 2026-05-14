@@ -40,7 +40,11 @@ export async function sendChatMessage(
   };
 
   const topic = `chat.message.outgoing.${message.platform}.${message.instance}.${message.channel}`;
-  await nats.publish(topic, JSON.stringify(envelope));
+  const result = await nats.publish(topic, JSON.stringify(envelope));
+
+  if (result === false) {
+    throw new Error(`Failed to publish chat message to ${topic}: NATS client disconnected`);
+  }
 
   if (metrics) {
     metrics.recordNatsPublish('command_response');

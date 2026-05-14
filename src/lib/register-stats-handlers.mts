@@ -1,12 +1,13 @@
 'use strict';
 
+import * as Nats from 'nats';
 import { log } from './log.mjs';
 import { NatsClient } from './nats-client.mjs';
 import { register as promRegister } from './metrics.mjs';
 import { ModuleMetrics } from './create-module-metrics.mjs';
 
 /** NatsClient subscription return type */
-type NatsSubscription = Promise<string | boolean>;
+type NatsSubscription = Promise<Nats.Subscription | false>;
 
 /**
  * Options for registerStatsHandlers.
@@ -33,7 +34,7 @@ interface NatsMessage {
  * Format milliseconds into a human-readable uptime string.
  * e.g. "1d 2h 3m 4s"
  */
-function formatUptime(ms: number): string {
+export function formatUptime(ms: number): string {
   const days = Math.floor(ms / 86400000);
   const hours = Math.floor((ms % 86400000) / 3600000);
   const minutes = Math.floor((ms % 3600000) / 60000);

@@ -22,9 +22,25 @@ export function registerGracefulShutdown(
       producer: 'registerGracefulShutdown',
     });
 
-    natsClients.forEach((natsClient) => {
-      void natsClient.drain();
-    });
+    await Promise.all(
+      natsClients.map(async (natsClient) => {
+        try {
+          const drainPromise = natsClient.drain();
+          const timeout = new Promise<void>((resolve) =>
+            setTimeout(() => resolve(), 3000).unref()
+          );
+          await Promise.race([drainPromise, timeout]);
+          log.info('NATS client drain completed or timed out', {
+            producer: 'registerGracefulShutdown',
+          });
+        } catch (error) {
+          log.error('NATS client drain failed', {
+            producer: 'registerGracefulShutdown',
+            error,
+          });
+        }
+      })
+    );
 
     if (cleanup) {
       try {

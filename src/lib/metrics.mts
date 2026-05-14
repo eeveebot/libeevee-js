@@ -43,7 +43,7 @@ export const errorCounter = new Counter({
 export const messageCounter = new Counter({
   name: 'messages_total',
   help: 'Total number of messages processed',
-  labelNames: ['module', 'direction', 'result'],
+  labelNames: ['module', 'platform', 'direction', 'result'],
 });
 
 export const messageProcessingTime = new Histogram({
@@ -102,6 +102,7 @@ export const commandErrorCounter = new Counter({
 
 // Helper functions for recording metrics safely
 export function recordMessage(
+  module: string,
   platform: string,
   network: string,
   channel: string,
@@ -110,7 +111,8 @@ export function recordMessage(
 ): void {
   try {
     messageCounter.inc({
-      module: platform,
+      module,
+      platform,
       direction,
       result,
     });
@@ -200,7 +202,7 @@ export function initializeSystemMetrics(moduleName: string): void {
   // Update uptime gauge periodically
   setInterval(() => {
     uptimeGauge.set({ module: moduleName }, process.uptime());
-  }, 10000); // Update every 10 seconds
+  }, 10000).unref(); // Update every 10 seconds
 
   // Update memory usage periodically
   setInterval(() => {
@@ -218,7 +220,7 @@ export function initializeSystemMetrics(moduleName: string): void {
       { module: moduleName, type: 'external' },
       memoryUsage.external
     );
-  }, 10000); // Update every 10 seconds
+  }, 10000).unref(); // Update every 10 seconds
 }
 
 // HTTP server metrics (for modules with HTTP servers)
