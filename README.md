@@ -65,7 +65,7 @@ const subs = await registerCommand(nats, {
 }, metrics);
 
 // Handle command execution
-nats.subscribe('command.execute.<uuid>', (subject, message) => {
+nats.subscribe('command.execute.<uuid>', (subject: string, message: Nats.Msg) => {
   const data = JSON.parse(message.string());
   sendChatMessage(nats, {
     channel: data.channel,
@@ -437,13 +437,73 @@ styles.bold('hello');
 ```ts
 interface RateLimitConfig {
   mode: 'enqueue' | 'drop';
-  level: 'channel' | 'user' | 'global';
+  level: 'platform' | 'instance' | 'channel' | 'user' | 'global';
   limit: number;
   interval: string; // e.g. "30s", "1m", "5m"
 }
 ```
 
 Also exported as `defaultRateLimit` — `{ mode: 'drop', level: 'user', limit: 5, interval: '1m' }`.
+
+#### `NatsSubscriptionResult`
+
+Type alias for `Nats.Subscription | false`. Used as the return type for `NatsClient.subscribe()` and the `natsSubscriptions` array type in consumer modules.
+
+```ts
+import { NatsSubscriptionResult } from '@eeveebot/libeevee';
+const natsSubscriptions: Array<Promise<NatsSubscriptionResult>> = [];
+```
+
+### Unregistration Helpers
+
+Mirror the registration helpers. Publish unregistration requests and subscribe to the corresponding `control.*` subjects for re-unregistration on demand.
+
+#### `unregisterCommand(nats, options, metrics?)`
+
+Unregisters a command by publishing to `command.unregister`.
+
+```ts
+await unregisterCommand(nats, {
+  commandUUID: '9e5c1e0c-...',
+  commandDisplayName: 'echo',
+}, metrics);
+```
+
+**CommandUnregistrationOptions:**
+
+| Field | Type | Description |
+|---|---|---|
+| `commandUUID` | `string` | UUID of the command to unregister |
+| `commandDisplayName` | `string` | Display name (used for control re-sub) |
+
+#### `unregisterBroadcast(nats, options, metrics?)`
+
+Unregisters a broadcast by publishing to `broadcast.unregister`.
+
+**BroadcastUnregistrationOptions:** same fields as `CommandUnregistrationOptions`.
+
+#### `unregisterHelp(nats, moduleName, metrics?)`
+
+Removes help entries for a module by publishing to `help.remove`.
+
+---
+
+### Utility
+
+#### `compileRegex(pattern, options?)`
+
+Compiles a regex pattern safely with ReDoS protection. Limits input to 500 characters and falls back to `/.^/` (never-matching) on failure.
+
+```ts
+import { compileRegex } from '@eeveebot/libeevee';
+const re = compileRegex('^!weather\\s+(.*)', { flags: 'i' });
+```
+
+#### `formatUptime(startTime)`
+
+Formats milliseconds since `startTime` into a human-readable uptime string (e.g. `"2d 3h 15m"`). Exported via `registerStatsHandlers` but also available directly.
+
+---
 
 #### `ChatMessage`
 
