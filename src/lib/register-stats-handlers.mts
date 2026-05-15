@@ -19,6 +19,8 @@ export interface StatsHandlersOptions {
   moduleName: string;
   /** Module start time (Date.now() captured at startup) */
   startTime: number;
+  /** Optional: Module version (included in stats response for drift detection) */
+  version?: string;
   /** Optional: Prometheus register instance (defaults to libeevee's shared register) */
   prometheusRegister?: typeof promRegister;
   /** Optional: module metrics instance for recording NATS pub/sub */
@@ -50,7 +52,7 @@ export function formatUptime(ms: number): string {
  * onto natsSubscriptions).
  */
 export function registerStatsHandlers(options: StatsHandlersOptions): NatsSubscription[] {
-  const { nats, moduleName, startTime, metrics } = options;
+  const { nats, moduleName, startTime, version, metrics } = options;
   const promReg = options.prometheusRegister ?? promRegister;
   const subscriptions: NatsSubscription[] = [];
 
@@ -67,6 +69,7 @@ export function registerStatsHandlers(options: StatsHandlersOptions): NatsSubscr
       const uptime = Date.now() - startTime;
       const uptimeResponse = {
         module: moduleName,
+        version,
         uptime,
         uptimeFormatted: formatUptime(uptime),
       };
@@ -104,6 +107,7 @@ export function registerStatsHandlers(options: StatsHandlersOptions): NatsSubscr
           const statsResponse = {
             module: moduleName,
             stats: {
+              version,
               uptime_seconds: Math.floor(uptime / 1000),
               uptime_formatted: formatUptime(uptime),
               memory_rss_mb: Math.round(memoryUsage.rss / (1024 * 1024)),
