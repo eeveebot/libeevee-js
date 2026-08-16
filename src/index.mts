@@ -47,6 +47,8 @@ export { sendChatMessage, sendAction, ChatMessage } from './lib/send-chat-messag
 export { registerHelp, HelpEntry } from './lib/register-help.mjs';
 export { unregisterCommand, CommandUnregistrationOptions } from './lib/unregister-command.mjs';
 export { unregisterBroadcast, BroadcastUnregistrationOptions } from './lib/unregister-broadcast.mjs';
+export { registerEvent, EventRegistrationOptions } from './lib/register-event.mjs';
+export { unregisterEvent, EventUnregistrationOptions } from './lib/unregister-event.mjs';
 export { unregisterHelp } from './lib/unregister-help.mjs';
 export { registerStatsHandlers, StatsHandlersOptions, formatUptime } from './lib/register-stats-handlers.mjs';
 export { queryChannelUsers, ChannelUser } from './lib/query-channel-users.mjs';
