@@ -285,6 +285,7 @@ const statsSubs = registerStatsHandlers({
   nats,
   moduleName: 'dice',
   startTime: moduleStartTime,
+  version: '1.5.5',  // optional: included in stats response for drift detection
   metrics,
   // Optional: custom Prometheus register (defaults to libeevee's shared register)
   // prometheusRegister: customRegister,
@@ -298,6 +299,7 @@ const statsSubs = registerStatsHandlers({
 | `nats` | `NatsClient` | Connected NATS client |
 | `moduleName` | `string` | Module name for responses |
 | `startTime` | `number` | `Date.now()` captured at startup |
+| `version` | `string?` | Module version (included in stats response for drift detection) |
 | `metrics` | `ModuleMetrics?` | For recording pub/sub metrics |
 | `prometheusRegister` | `any?` | Custom prom-client register |
 
@@ -683,4 +685,4 @@ Contributions are welcome! Please see the [eevee contributing guide](https://git
 
 ## License
 
-[CC BY-NC-SA 4.0](https://creativecommons.org/licenses/by-nc-sa/4.0/) — see [LICENSE](./LICENSE) for the full text.
+[AGPL-3.0-or-later](https://www.gnu.org/licenses/agpl-3.0.en.html) — see [LICENSE](./LICENSE) for the full text.
